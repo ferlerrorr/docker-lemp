@@ -1,0 +1,17 @@
+commands
+
+- need ng docker kahit docker for desktop lang
+
+- then run lang yung
+
+      docker-compose up -d
+
+para sa laravel namn if re install
+
+- need ng composer sa local pc
+
+- then run command
+
+cd src
+
+      composer create-project laravel/laravel .

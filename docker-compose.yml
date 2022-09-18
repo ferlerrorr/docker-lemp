@@ -1,0 +1,56 @@
+#  - standard lang para sa docker file
+version: '3'
+
+
+#  - network name
+networks:
+  laravel:
+
+services:
+  nginx:
+  #  image: nginx:stable-alpine try decoupling OS ito yung unang image nginx:stable-alpine
+    image: nginx
+    container_name: nginx
+    ports:
+        # the url is localhost:8080
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - laravel
+
+  mysql:
+    image: mysql:5.7.22
+    container_name: mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "4306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      # dapat ma palitan ng mga mga nasa .env file
+      MYSQL_DATABASE: ?dbname
+      MYSQL_USER:     ?username
+      MYSQL_PASSWORD: ?password
+      MYSQL_ROOT_PASSWORD: ?password
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - laravel
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "9000:9000"
+    networks:
+      - laravel
